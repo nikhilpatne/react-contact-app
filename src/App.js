@@ -1,23 +1,20 @@
 import React from 'react';
 import  { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
 
 import Header from './components/Header'
 import AddContact from './components/AddContact'
 import ContactList from './components/ContactList'
-
+import Paper from '@material-ui/core/Paper';
+import { SearchBar } from './components/SearchBar';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
   paper: {
-    padding: theme.spacing(2),
-    textAlign: 'center',
+    padding: theme.spacing(5),
     color: theme.palette.text.secondary,
   },
   textField: {
@@ -29,6 +26,8 @@ export default function App() {
   const classes = useStyles();
 
   const [contacts, setContacts] = useState([])
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
 
 
   const addContacts = (name,email) => {
@@ -39,6 +38,20 @@ export default function App() {
     else{ alert("Please provider username or password") }
 }
 
+const searchHandler = (searchTerm) => {
+  setSearchTerm(searchTerm);
+  if (searchTerm !== "") {
+    const newContactList = contacts.filter((contact) => {
+      return Object.values(contact)
+        .join(" ")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+    });
+    setSearchResults(newContactList);
+  } else {
+    setSearchResults(contacts);
+  }
+};
 
 const removeContacts = (name) => {
   const newList = contacts.filter((contact) =>{
@@ -59,7 +72,7 @@ useEffect(() => {
 
   return (
     <div className={classes.root}>
-      <Grid container spacing={7}>
+      <Grid container spacing={3}>
 
       <Grid item xs={12} sm={12}>
         <Header/>
@@ -68,7 +81,9 @@ useEffect(() => {
 
         <Grid item xs={6} sm={2}></Grid>
               <Grid item xs={12} sm={8}>
+              {/* <Paper className={classes.paper}> */}
                   <AddContact addContacts={addContacts}/>
+                  {/* </Paper> */}
               </Grid>
         <Grid item xs={6} sm={2}></Grid>
 
@@ -76,8 +91,10 @@ useEffect(() => {
 
         <Grid item xs={6} sm={2}></Grid>
               <Grid item xs={12} sm={8}>
-                  <ContactList contacts={contacts} removeContacts={removeContacts}/>
+                  <SearchBar searchHandler={searchHandler}/>
+                  <ContactList contacts={searchTerm.length < 1 ? contacts : searchResults} removeContacts={removeContacts}/>
               </Grid>
+
         <Grid item xs={6} sm={2}></Grid>
 
 

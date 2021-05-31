@@ -25,7 +25,6 @@ const ContactList = (props) => {
         const { name, email } = contact;
     return (
         <div>
-
             <List className={classes.contactlist}>
       <ListItem>
         <ListItemAvatar>
@@ -44,7 +43,12 @@ const ContactList = (props) => {
     )
     })
 
-    return <div>{contact_list}</div>
+
+    return <div>{ contact_list }</div>
+
+    // return <div> {contact_list.length > 0
+    //   ? contact_list
+    //   : "No Contacts available"}</div>
 }
 
 export default ContactList
